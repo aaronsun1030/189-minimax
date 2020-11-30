@@ -1,5 +1,5 @@
 # 189 Minimax
-Hi! This repo contains materials for the CS189 Project T. We hope that students in EE16B can use this repo to learn all about minimax and how it can be applied to various topics.
+Hi! This repo contains materials for the CS189 Project T. We hope that students can use this repo to learn all about minimax and how it can be applied to various topics.
 ## Learning Goals
 - Explore ideas necessary to implement minimax: heuristic, depth
 - Implement basic Minimax on chess
