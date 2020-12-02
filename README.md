@@ -1,6 +1,6 @@
 # 189 Minimax
 Hi! This repo contains materials for the CS189 Project T. We hope that students can use this repo to learn all about minimax and how it can be applied to various topics.
-## Learning Goals
+## Learning Goals and How They Are Achieved
 - Explore ideas necessary to implement minimax: game state spaces, game trees, heuristics, minimax procedure
   - Game states are game trees are discussed in the context of Chess and Tic Tac Toe with worked examples in the slides and notes
   - Minimax algorithm principles, pseudocode, and example of execution
@@ -15,6 +15,7 @@ Hi! This repo contains materials for the CS189 Project T. We hope that students 
   - We provide a project where students implement quiescence search and move ordering on top of the earlier concepts
   - We show how these extensions allow a Chess AI to tackle challenging Chess puzzles
 - Verify that students learned these concepts by asking conceptual and applied questions in a provided quiz
+- By the end of this module, a student will be able to implement advanced game tree searching techniques and will understand the conceptual ideas and tradeoffs that come with these approaches
 
 ## Navigating the Repo
 Our repo contains three main sections: teaching, assignments, and quiz.
