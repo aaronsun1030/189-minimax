@@ -29,9 +29,22 @@ class TacticSolver:
         return self.find_move(board, depth, turn, -self.INFTY, self.INFTY)[1]
 
     def find_move(self, board, depth, turn, alpha, beta):
-        """Does alpha-beta pruning to find the best move for the given position.
-        If we hit depth 0, we run Quiescence search with double the depth."""
-        # Hint: Put various ending conditions here
+        """
+        Does alpha-beta pruning to find the best move for the given position.
+        If we hit depth 0, we run Quiescence search with double the depth.
+
+        Parameters:
+        board (chess.Board): Current board state to search.
+        depth (int): Depth to which we should search.
+        turn (int): Player to move. 1 if WHITE, -1 if BLACK.
+        alpha (float): Alpha parameter used for alpha-beta pruning.
+        beta (float): Beta parameter used for alpha-beta pruning.
+        killer_moves (iterable): The set of killer moves for the previous position. See spec for more details.
+
+        Returns: 
+        (float, chess.Move): A tuple of the best move and the evaluation associated with that move.
+        """
+        # Hint: Put various terminating conditions here
 
         # Hint: Put starting search values here
 
@@ -40,8 +53,20 @@ class TacticSolver:
         return best_value, best_refute
 
     def quiescence(self, board, depth, turn, alpha, beta):
-        """Quiescence search, which searches checks and captures to a given depth.
-        If the position is quiet, return the static score of the position."""
+        """
+        Quiescence search, which searches checks and captures to a given depth.
+        If the position is quiet, return the static score of the position.
+        
+        Parameters:
+        board (chess.Board): Current board state to search.
+        depth (int): Depth to which we should search.
+        turn (int): Player to move. 1 if WHITE, -1 if BLACK.
+        alpha (float): Alpha parameter used for alpha-beta pruning.
+        beta (float): Beta parameter used for alpha-beta pruning.
+
+        Returns: 
+        (float, chess.Move): A tuple of the best move and the evaluation associated with that move.
+        """
         # Hint: Put various ending conditions here
 
         # Hint: Put break condition on quiet positions here
@@ -55,13 +80,20 @@ class TacticSolver:
         return best_value, best_refute  
 
     def move_order(self, board, killers, Q):
-        """Yields the given moves for board, in the following order:
-        1. Captures (MVV-LVA order)
+        """
+        Generates moves for the board in the order which we wish to search them.
+        
+        Parameters:
+        board (chess.Board): Current board state to search
+        killers (iterable): The set of killer moves for the previous position. See spec for more details.
+        Q (boolean): Whether or not the moves generated are being used for a Quiescence search.
+        
+        Yields:
+        1. Captures
         2. Checks
         The above two are given for quiescence Q, the below are not.
         3. Killers, or the best refutation for sister nodes
         4. All other legal moves in random order
-        Note all possible moves are given if escaping check regardless of Q.
         """
         # Hint: Find captures and checks here
         
