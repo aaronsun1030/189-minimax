@@ -16,6 +16,8 @@
 \maketitle
 
 1. Suppose we have the following payoff matrix for $A$ in a zero-sum game where $A$ moves first: \\
+\begin{table}[H]
+\centering
 \begin{tabular}{|c|c|c|}
     \hline
     & $B$ Cooperates & $B$ Defects \\
@@ -25,15 +27,16 @@
     $A$ Defects & 2 & 2 \\
     \hline
 \end{tabular} \\
-Assuming both players play optimally, what is $A$'s optimall strategy and payoff? \\
+\end{table}
+Assuming both players play optimally, what is $A$'s optimal strategy and payoff? \\
 
 2. What is the purpose of using a heuristic in minimax? \\
 
 3. Suppose a game where each player takes 2 turns in a row. How would the minimax algorithm change? \\
 
-4. In the Tactics Solver, there are some situations where the engine is unable to find the solution without a very high depth, regardless of the depth of quiescence search. What kind of situations might cause this? \\
+4. In the Tactics Solver assignment, there are some situations where the engine is unable to find the solution without a very high depth, regardless of the depth of quiescence search. What kind of situations might cause this? \\
 
-5. Why would iterative deepening be used instead of breadth-first search? \\
+5. Why would iterative deepening be used instead of breadth-first search in minimax? \\
 
 6. Why can't we just search at a fixed depth until our alotted time runs out instead of using iterative deepening? \\
 
@@ -58,5 +61,5 @@ Assuming both players play optimally, what is $A$'s optimall strategy and payoff
 
 11. Suppose a game with a branching factor of 7. How many states do we search if we begin a minimax search with no pruning of depth 3? \\
 
-12. Explain possible drawbacks to the following heuristic for Connect-4: $(\text{Reds in a row}) - (\text{Blacks in a row})$
+12. Explain possible drawbacks to the following heuristic for the board game Connect-4, where the goal is to get $4$ pieces in a row: $(\text{Reds in a row}) - (\text{Blacks in a row})$.
 \end{document}

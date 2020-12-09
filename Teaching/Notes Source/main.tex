@@ -24,13 +24,13 @@ To pick an action after defining a game state, we should understand the next sta
 \begin{figure}[H]
 \centering
 \includegraphics[scale=0.25]{tic-tac-toe-tree.svg.png}
-\caption{Tic-Tac-Toe game tree from Wikipedia}
+\caption*{Tic-Tac-Toe game tree from Wikipedia}
 \end{figure}
 In the game tree above, the nodes are game states and the edges are possible actions that players can take to move from one state to another. For two player games like Tic-Tac-Toe or Chess, the moving player alternates as we go down each level of nodes and edges. For an $n$-player game where players take turns in order, the levels would cycle through the players from $1$ to $n$. The root of the tree is the starting position we search from, in this case the beginning of the game.
 \section*{Minimax}
 Now that we know how states evolve, how can we figure out the best move? \\[0.2cm]
-To simplify our analysis, we will focus on two-player \textbf{zero-sum} games. A two-player zero-sum game is one where \textbf{reward} values for players sum to $0$. A common class of zero-sum games are those where we reward the winning player $+1$ and the losing player $-1$ so that the sum of reards is $0$. \\[0.2cm]
-In this setting, there is a very common algorithm for finding the best move that is known as \textbf{minimax}. After the first player moves, the second player wishes to maximize their reward from the new state. Sicne the game is zero-sum, the first player wishes to minimize the reward of the second player in order to maximize their own. Then the first player wishes to minimize the maximum reward that the second player can obtain after their move. Iterating this logic, the second player will want to maximize the minimum reward that they can get after the first player's next move. \\[0.2cm]
+To simplify our analysis, we will focus on two-player \textbf{zero-sum} games. A two-player zero-sum game is one where \textbf{reward} values for players sum to $0$. A common class of zero-sum games are those where we reward the winning player $+1$ and the losing player $-1$ so that the sum of rewards is $0$. \\[0.2cm]
+In this setting, there is a very common algorithm for finding the best move that is known as \textbf{minimax}. After the first player moves, the second player wishes to maximize their reward from the new state. Since the game is zero-sum, the first player wishes to minimize the reward of the second player in order to maximize their own. Then the first player wishes to minimize the maximum reward that the second player can obtain after their move. Iterating this logic, the second player will want to maximize the minimum reward that they can get after the first player's next move. \\[0.2cm]
 These alternating turns of minimizing and maximizing a reward function lead to the name minimax. The algorithm is also known as \textbf{maximin} if the first player instead maximizes and the second player minimizes but these are conceptually identical and are used interchangeably.
 \newpage
 \section*{Minimax Example}
@@ -55,6 +55,7 @@ For larger games, the minimax algorithm is more easily visualized via a tree.
 \begin{figure}[H]
 \centering
 \includegraphics[scale=0.4]{minimax-tree.png}
+\caption*{Minimax Tree Example from CS 61B}
 \end{figure}
 We begin with leaf nodes corresponding to ending game states with known reward. From these states, the rewards at the states one level above can be determined. At this level, you are the moving player so you look at the two child leaf nodes of each node and pick the one with maximum value. This yields the values $\max(-30, -5) = -5, \max(5, 15) = 15,\max(-20, -30) = -20,\max(9, 10) = 10$. At the level above this, it is your opponent's move and they minimize over the children of each node, yielding $\min(-5,15)=-5, \min(-20,10)=-20$. Finally at the top level, you calculate $\max(-5, -20) = -5$.
 \newpage
@@ -81,6 +82,7 @@ To gain more intuition, we demonstrate alpha-beta pruning with the same game tre
 \begin{figure}[H]
 \centering
 \includegraphics[scale=0.4]{alpha-beta.png}
+\caption*{Alpha-Beta Pruning Example from CS 61B}
 \end{figure}
 We begin from $A$ and initialize worst case values of $\alpha = -\infty, \beta = \infty$. We move left down the tree and reach $D$. At $D$, we first see $G$ has value $-30$. It is the maximizing player's turn so we update $\alpha = \max(-\infty, -30) = -30$. Then we see $H$, update $\alpha = \max(-30, -5) - -5$, and return $-5$. \\[0.2cm]
 Now at $B$ the minimizing player can force a value of $-5$ by moving to $D$ so $\beta$ at $B$ is updated to $\min(\infty, -5) = -5$. We move to $B$'s right child, $E$, with this new $\beta$. Child $I$ has value $5$ so the maximizing player can achieve $\alpha = \max(-\infty, 5) = 5$ at $E$. However, $\beta < \alpha$ since the minimizing player can guarantee a lower value at $D$ so we prune $E$'s subtree and $B$'s value becomes $-5$. \\[0.2cm]
@@ -100,6 +102,36 @@ The alpha-beta pruning algorithm can be summarized as follows. \\[0.2cm]
 \section*{Iterative Deepening}
 In practice, we usually want the computer to calculate a reasonable move in some fixed amount of time. We could easily do this if we knew how long it would take to search at a given depth. But this can vary based on the branching factor of the game at various points and how often we are able to prune using alpha-beta pruning. Furthermore, it's important to finish searching at a given depth before searching deeper. Otherwise, we could be searching suboptimal moves very deeply while neglecting the best move in another part of the tree. \\[0.2cm]
 An initial approach that you might come up with is breadth first search. Since this search gradually increases depth, we could keep searching deeper and deeper until time runs out and then return the best move at the highest depth we have finished searching. Unfortunately, breadth first search requires that the previous level of nodes is stored in a queue and the number of nodes in a level increases exponentially so we will quickly run out of memory. Furthermore, alpha beta pruning involves searching one subtree deeper in order to bound state values and avoid searching other subtrees. But if we are only increasing depth by $1$ each iteration, there is little opportunity for this. \\[0.2cm]
-An idea of \textbf{iterative deepening} is used to resolve this issue. We start by running a search at a small depth like $d = 1$ and keep rerunning the entire search, increasing $d$ by $1$ each time. If we use depth first search for this, our memory is only the $O(d)$. This might seem extremely inefficient - why are we redoing all of our previous work every time we search? \\[0.2cm]
-Surprisingly, since the number of nodes in a game tree usually increases exponentially at each level, all of the previous search times become negligible compared to the search time for the last level for a sufficiently large branching factor. Iterative deepening ends up having the same asymptotic runtime as breadth first search while having vastly better space and using alpha-beta pruning on each individual search. As a result, iterative deepening allows for adaptable game engines that can perform well in time-limited settings.
+\newpage
+An idea of \textbf{iterative deepening} is used to resolve this issue. We start by running a search at a small depth like $d = 1$ and keep rerunning the entire search, increasing $d$ by $1$ each time. If we use depth first search for this, our memory is only the $O(d)$. \\[0.2cm]
+\begin{figure}[H]
+    \centering
+    \includegraphics[]{iterative_deepening.jpg}
+    \caption*{Iterations of Iterative Deepening from Chess Wiki}
+\end{figure}
+This might seem extremely inefficient - why are we redoing all of our previous work every time we search? Surprisingly, since the number of nodes in a game tree usually increases exponentially at each level, all of the previous search times become negligible compared to the search time for the last level for a sufficiently large branching factor. Iterative deepening ends up having the same asymptotic runtime as breadth first search while having vastly better space and using alpha-beta pruning on each individual search. As a result, iterative deepening allows for adaptable game engines that can perform well in time-limited settings.
+\section*{Transposition Tables}
+When searching a game's state space, we may run into positions that we have seen before. This can occur more often than expected because rearrangements of moves can result in the same position. For example in Go and Othello, placing pieces in different orders may result in identical board states. These reorderings of moves are called \textbf{transpositions}. In such cases, we might want to save the repeated board states so that we don't waste time redoing searches. \\
+As usual, hashing is an excellent way to store a table of search results. This table is known as a \textbf{transposition table}. Some common pieces of information that might be stored in a position entry are search depth, estimated evaluation of the state at that depth, and the best responding move, although this can vary from game to game. When we run into a position again, we can check if it already has an entry of sufficient depth and if so, we can reuse this entry. Otherwise, we evaluate at the current depth and store the results depending on our policy for storing positions. In the notebook, you'll see that transposition tables may slow down searching when there are many moves but are incredibly helpful in Chess endgames when there are many repeated states. \\
+Of course, we have limited space in our table so eventually we must choose how to replace, or ``evict" table entries. There are some criteria to trade off here: deeply-searched positions will save more time but recently-seen positions or positions near leaves may be encountered more often. In practice, the best performing strategies usually balance these objectives.
+\section*{Move Ordering}
+When we encounter a good position in alpha-beta pruning, we are able to prune away many worse positions since we have already found a better option. A real life example where this occurs is college applications: after getting accepted to an excellent school like Berkeley you're able to ``prune" safety schools like Stanford and UCLA. This could save you a lot of time filling out applications and likewise it saves a huge amount of time searching inferior positions in game trees. \\
+As a concrete example of how we would implement this, consider the board game Connect 4 where the objective is to get $4$ pieces connected in a row. Moves that create a line of $4$ pieces should be searched first since these win immediately. In general, moves that create runs of many pieces are likely to be better so searching these moves earlier may allow us to prune more states later on. To implement this, we can use specific knowledge of which moves are likely to be better but can also consider good moves already saved in our transposition table. This allows us to achieve faster runtime and potentially search important states more deeply, giving us a significant advantage.
+\section*{The Horizon Effect and Quiescence Search}
+A key problem with doing limited depth searches is that events beyond the depth boundary or ``horizon" of our search will be undetected. We might search up to depth $d$ with our AI and not see that right beyond the horizon at depth $d + 1$, we will lose the game. \\
+\begin{figure}[H]
+    \centering
+    \includegraphics[]{horizon.png}
+    \caption*{A Loss Lurking Just Beyond the Horizon from krystman.itch.io}
+\end{figure}
+Humans usually search these volatile positions more deeply until the valuation of the position has settled and they are more confident about their estimate. Imitating this strategy for computers leads to the idea of \textbf{quiescence search}. \\
+To implement quiescence search, we first require some estimate of how volatile a position is. Certain move types such as captures may be more volatile which might lead us to implement a \textbf{capture search} where we search through all captures. Alternatively, we might look at heuristic valuations of nearby states to estimate the volatility of our current state and search deeper if there is too much variation. \\
+At the largest depth of minimax, rather than returning a static evaluation of the state we call quiescence search on the state. Quiescence search does another search of a new depth, for only a particular limited set of moves. Quiescence search terminates either when the position is quiet, or non-volatile, or when we search the adequate depth. Quiescence search makes it more likely we will not stop our search on nodes which will have drastic changes in evaluation in the next moves. While we are unable to fully overcome the horizon effect, we can mitigate it so its effects are not as potent on our search, especially at lower depths.
+\section*{References}
+\begin{itemize}
+    \item CS189 course slides
+    \item CS61B course slides
+    \item Chessprogramming wiki
+    \item Wikipedia
+\end{itemize}
 \end{document}
