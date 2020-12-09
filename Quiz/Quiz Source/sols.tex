@@ -44,7 +44,7 @@ Assuming both players play optimally, what is $A$'s optimal strategy and payoff?
 
 6. Why can't we just search at a fixed depth until our alotted time runs out instead of using iterative deepening? \\
 6A. Any minimax search done at a certain depth is not effective unless we finish the entire search at that depth. This is because the next move we decide to look at could be the best one, so if we stop before completing the search then we could miss a better move that would appear later on. \\
-\newpage
+
 7. Fill in the node values calculated by minimax in the tree below and cross out branches pruned by alpha-beta pruning. $\Delta$ are maximizing and $\nabla$ are minimizing.
 \begin{figure}[H]
     \centering
@@ -76,5 +76,14 @@ Assuming both players play optimally, what is $A$'s optimal strategy and payoff?
 11A. $7^3 = 343$ states. \\
 
 12. Explain possible drawbacks to the following heuristic for Connect-4, where the goal is to get $4$ pieces in a row: $(\text{Reds in a row}) - (\text{Blacks in a row})$. \\
-12A: The heuristic does not recognize that having a blocked line of pieces is useless.
+12A: The heuristic does not recognize that having a blocked line of pieces is useless. \\
+
+13. Explain why in a transposition table we store not just an evaluation of a state, but the depth of that evaluation as well. \\
+13A: We store the depth in order to know whether the value stored in the transposition table is accurate enough (of a high enough depth) to be substituted for the current search. \\
+
+14. What are some ways that we can choose good moves for move ordering? \\
+14A. We can look in the transposition table to see if there are any already good moves. We can also use game specific knowledge to search moves that are likely to be better first (such as game-winning moves or captures).
+
+15. Explain how quiescence search is able to mitigate some of the effects of the horizon effect.\\
+15A. The horizon effects describes losses which exist past the depth at which we search. With quiescence search, we are able to reduce the horizon effect by searching volatile positions more deeply so that our evaluation is more likely to be accurate. While this is not effective in quiet positions, we expect that quiet positions are non-volatile so our evaluation will be relatively accurate.
 \end{document}
