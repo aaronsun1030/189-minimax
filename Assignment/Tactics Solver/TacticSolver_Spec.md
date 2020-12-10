@@ -12,12 +12,12 @@ In Alpha-Beta Pruning, since we prune more depending on whether we have already 
 
 For that reason, we will implement a move ordering in our search. In chess, there are some general guidelines which we will follow in determining the ordering of our outputs. In particular, we will follow this ordering in considering our legal moves:
 
-    1. Captures
-        a. En passant (if possible). This is a special pawn capture which should be considered first.
-        b. All other captures, based on the MVV-LVA (most valuable victim - least valuable aggressor) ordering. Using the valuations given in the heuristic, we will yield captures, sorting based on the most valuable victim first then sorting based on the least valuable aggressor for different captures of the same victim. To find the values of each piece, you can use the self.pieces instance variable which is a dictionary mapping from piece type to value.
-    2. Checks, or any move that puts the opponent's king in check will be outputted in any order.
-    3. Killers, explained in Section 2.
-    4. All other legal moves in any order.
+1. Captures
+    1. En passant (if possible). This is a special pawn capture which should be considered first.
+    2. All other captures, based on the MVV-LVA (most valuable victim - least valuable aggressor) ordering. Using the valuations given in the heuristic, we will yield captures, sorting based on the most valuable victim first then sorting based on the least valuable aggressor for different captures of the same victim. To find the values of each piece, you can use the self.pieces instance variable which is a dictionary mapping from piece type to value.
+2. Checks, or any move that puts the opponent's king in check will be outputted in any order.
+3. Killers, explained in Section 2.
+4. All other legal moves in any order.
     
 For Quiescence searches (Section 3), only the first 2 are yielded, unless the player is escaping check.
 
@@ -44,18 +44,19 @@ Implement this in the quiescence function. You can find the psuedocode for this 
 
 ## Useful Functions
 Here are some various useful functions and desciptions copied from the [python-chess](https://python-chess.readthedocs.io/en/latest/) library you might consider using in your solution:
-    - Game End Conditions
-        - chess.Board.is_checkmate(): Checks if the current position is a checkmate.
-        - chess.Board.is_stalemate(): Checks if the current position is a stalemate.
-        - chess.Board.can_claim_draw(): Checks if the player to move can claim a draw by the fifty-move rule or by threefold repetition.
-    - Moves and Move Types
-        - chess.Board.legal_moves: An iterator which returns legal moves in the current position.
-        - chess.Board.is_capture(Move move): Checks if the given pseudo-legal move is a capture.
-        - chess.Board.is_en_passant(Move move): Checks if the given pseudo-legal move is an en passant capture.
-        - chess.Board.gives_check(Move move): Probes if the given move would put the opponent in check. The move must be at least pseudo-legal.
-    - Other Board Properties
-        - chess.Board.is_check(): Tests if the current side to move is in check.
-        - chess.Board.piece_type_at(Square square): Gets the piece type at the given square.
+
+- Game End Conditions
+    - chess.Board.is_checkmate(): Checks if the current position is a checkmate.
+    - chess.Board.is_stalemate(): Checks if the current position is a stalemate.
+    - chess.Board.can_claim_draw(): Checks if the player to move can claim a draw by the fifty-move rule or by threefold repetition.
+- Moves and Move Types
+    - chess.Board.legal_moves: An iterator which returns legal moves in the current position.
+    - chess.Board.is_capture(Move move): Checks if the given pseudo-legal move is a capture.
+    - chess.Board.is_en_passant(Move move): Checks if the given pseudo-legal move is an en passant capture.
+    - chess.Board.gives_check(Move move): Probes if the given move would put the opponent in check. The move must be at least pseudo-legal.
+- Other Board Properties
+    - chess.Board.is_check(): Tests if the current side to move is in check.
+    - chess.Board.piece_type_at(Square square): Gets the piece type at the given square.
         
 ## Testing
 We have included some basic tactics in unittests.py. You should be able to solve them with the same depth as the solutions, as long as you have implemented quiescence search correctly. The comparison of the speed of your solution with the actual solutions is also given. Good luck!
