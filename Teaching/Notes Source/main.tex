@@ -9,7 +9,7 @@
 \setlength\parindent{0pt}
 \title{Minimax}
 \author{Team Chairun}
-\date{November 27, 2020}
+\date{}
 
 \begin{document}
 
@@ -20,7 +20,8 @@ Previously, you may have been introduced to the idea of a \textbf{state space}. 
 Note that dependence on previous states can often be eliminated by simply augmenting our definition of the state to include relevant information from previous states. For example, if we care about the direction of motion of a helicopter, we might include its previous position in the state so that this could be determined. Constructing a state appropriately allows us to analyze a system more conveniently.
 \section*{Game Trees}
 Games are often represented by state spaces since there are usually only a few important variables. For example in Tic-Tac-Toe, the state can be described by the board - all other information is irrelevant. \\[0.2cm]
-To pick an action after defining a game state, we should understand the next state. Since each state has a "parent" state that it came from, the possible states that can evolve from a given state can be visualized as a game tree where "parent" states point to "child" states. \\
+To pick an action after defining a game state, we should understand the next state. Since each state has a "parent" state that it came from, the possible states that can evolve from a given state can be visualized as a game tree where "parent" states point to "child" states.
+\newpage
 \begin{figure}[H]
 \centering
 \includegraphics[scale=0.25]{tic-tac-toe-tree.svg.png}
@@ -29,10 +30,9 @@ To pick an action after defining a game state, we should understand the next sta
 In the game tree above, the nodes are game states and the edges are possible actions that players can take to move from one state to another. For two player games like Tic-Tac-Toe or Chess, the moving player alternates as we go down each level of nodes and edges. For an $n$-player game where players take turns in order, the levels would cycle through the players from $1$ to $n$. The root of the tree is the starting position we search from, in this case the beginning of the game.
 \section*{Minimax}
 Now that we know how states evolve, how can we figure out the best move? \\[0.2cm]
-To simplify our analysis, we will focus on two-player \textbf{zero-sum} games. A two-player zero-sum game is one where \textbf{reward} values for players sum to $0$. A common class of zero-sum games are those where we reward the winning player $+1$ and the losing player $-1$ so that the sum of rewards is $0$. \\[0.2cm]
+To simplify our analysis, we will focus on two-player \textbf{zero-sum} games. In the context of games, a \textbf{reward} is a numerical value given to a player at the end of a game, where larger rewards are more preferable. Two-player zero-sum games are those where reward values for players sum to $0$. A common class of zero-sum games are those where we reward the winning player $+1$ and the losing player $-1$ so that the sum of rewards is $0$. \\[0.2cm]
 In this setting, there is a very common algorithm for finding the best move that is known as \textbf{minimax}. After the first player moves, the second player wishes to maximize their reward from the new state. Since the game is zero-sum, the first player wishes to minimize the reward of the second player in order to maximize their own. Then the first player wishes to minimize the maximum reward that the second player can obtain after their move. Iterating this logic, the second player will want to maximize the minimum reward that they can get after the first player's next move. \\[0.2cm]
 These alternating turns of minimizing and maximizing a reward function lead to the name minimax. The algorithm is also known as \textbf{maximin} if the first player instead maximizes and the second player minimizes but these are conceptually identical and are used interchangeably.
-\newpage
 \section*{Minimax Example}
 \begin{table}[H]
 \begin{center}
@@ -57,9 +57,9 @@ For larger games, the minimax algorithm is more easily visualized via a tree.
 \includegraphics[scale=0.4]{minimax-tree.png}
 \caption*{Minimax Tree Example from CS 61B}
 \end{figure}
-We begin with leaf nodes corresponding to ending game states with known reward. From these states, the rewards at the states one level above can be determined. At this level, you are the moving player so you look at the two child leaf nodes of each node and pick the one with maximum value. This yields the values $\max(-30, -5) = -5, \max(5, 15) = 15,\max(-20, -30) = -20,\max(9, 10) = 10$. At the level above this, it is your opponent's move and they minimize over the children of each node, yielding $\min(-5,15)=-5, \min(-20,10)=-20$. Finally at the top level, you calculate $\max(-5, -20) = -5$.
+We begin with leaf nodes corresponding to end states with known reward. From these states, the rewards at the states one level above can be determined. At this level, you are the moving player so you look at the two child leaf nodes of each node and pick the one with maximum value. This yields the values $\max(-30, -5) = -5, \max(5, 15) = 15,\max(-20, -30) = -20,\max(9, 10) = 10$. At the level above this, it is your opponent's move and they minimize over the children of each node, yielding $\min(-5,15)=-5, \min(-20,10)=-20$. Finally at the top level, you calculate $\max(-5, -20) = -5$.
 \newpage
-This example illustrates how minimax can be used to evaluate intermediate game states. Furthermore, by storing the calculated optimal actions inside each node, you can easily execute the optimal strategy for a game. Due to the dependence of parent nodes on their child nodes, the minimax algorithm can be described via the following recursive procedure. \\[0.2cm]
+This example illustrates how minimax can be used to evaluate intermediate game states. Furthermore, by storing the calculated optimal actions inside each node, you can easily execute the optimal strategy for a game. In the example above, we run the algorithm layer by layer starting from end states but in reality it is usually run using the following recursive depth-first search procedure: \\[0.2cm]
 \underline{Minimax Algorithm}
 \begin{enumerate}
     \item If the game is over, return the value for this state.
@@ -67,11 +67,11 @@ This example illustrates how minimax can be used to evaluate intermediate game s
     \item Execute the minimax algorithm on each of the resulting states with the opposite player to calculate their values.
     \item Return the action with maximum/minimum value if you are the maximizing/minimizing player.
 \end{enumerate}
-The games we have mentioned so far (Chess, Tic-Tac-Toe, the two games above) all are deterministic games. For stochastic games, there is an extension of minimax called \textbf{expectiminimax}, which instead minimizes/maximizes over the expected reward to choose actions and calculate expected rewards of earlier states. The reward function must be defined carefully with this algorithm. If reward for a checkers game was chosen to be number of leftover pieces, the algorithm would potentially maximize margin of victory at the cost of winning chances. In contrast, defining reward as $\pm 1$ for a win or loss would optimize winning probability. Expectiminimax is quite powerful and often performs well in the CS61A Hog Contest.
+The games we have mentioned so far (Chess, Tic-Tac-Toe, the two games above) all are deterministic games. For stochastic games, there is an extension of minimax called \textbf{expectiminimax}, which instead minimizes/maximizes over the expected reward to choose actions and calculate expected rewards from earlier states. The reward function must be defined carefully with this algorithm. If reward for a checkers game was chosen to be number of leftover pieces, the algorithm would potentially maximize margin of victory at the cost of winning chances. In contrast, defining reward as $\pm 1$ for a win or loss would optimize winning probability. Expectiminimax is quite powerful and often performs well in the CS61A Hog Contest.
 \section*{Heuristics}
 The above method requires that we iterate over all game states starting from the ending states and building upwards. But this is computationally infeasible when there are too many states. For instance, the board game Othello has about $10^{28}$ states and a laptop computer wouldn't finish iterating over this many states before the end of the universe. \\[0.2cm]
 To address this issue, we can cut off our tree at some depth and try to get a reasonable estimate of the values of nodes at this depth. Then we can simply apply minimax to this truncated tree to calculate the optimal actions based on our estimates. \\[0.2cm]
-How can we get these estimated values of states? The function that is used to map from states to estimated values is called a \textbf{heuristic}, and will of course vary from game to game. Heuristics usually combine together various parameters of the state into estimates. For example a simple Tic-Tac-Toe heuristic might be $(\text{X's in a row}) - (\text{O's in a row})$ since we might expect the first player to be more likely to win if there are more X's and less likely to win if there are more O's. The problem of choosing such a heuristic is a good candidate for machine learning since it is effectively a regression problem and training data is easily obtained. \\[0.2cm]
+How can we get these estimated values of states? The function that is used to map from states to estimated values is called a \textbf{heuristic} or \textbf{evaluation}, and will of course vary from game to game. Heuristics usually combine together various parameters of the state into estimates. For example a simple Tic-Tac-Toe heuristic might be $(\text{X's in a row}) - (\text{O's in a row})$ since we might expect the first player to be more likely to win if there are more X's and less likely to win if there are more O's. The problem of choosing such a heuristic is a good candidate for machine learning since it is effectively a regression problem and training data is easily obtained. \\[0.2cm]
 Interestingly, minimax can itself be thought of as searching up to a given depth and then evaluating a heuristic function which happens to require searching further. This suggests that with a sufficiently good heuristic, searching up to a given depth can be almost as good as minimax. For moderately large games, this strategy can often outperform humans.
 \newpage
 \section*{Alpha-Beta Pruning}
